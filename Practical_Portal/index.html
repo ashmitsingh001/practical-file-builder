@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Java Practical Portal - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .login-card {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 { font-size: 24px; margin-bottom: 8px; font-weight: 800; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 24px; }
+        .input-group { text-align: left; margin-bottom: 16px; }
+        label { display: block; font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 6px; text-transform: uppercase; }
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus { border-color: #3b82f6; outline: none; }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+        .btn:hover { background: #2563eb; transform: translateY(-1px); }
+        .footer { margin-top: 20px; font-size: 13px; color: #94a3b8; }
+        .footer a { color: #3b82f6; text-decoration: none; font-weight: 600; }
+        #message { margin-top: 16px; font-size: 13px; font-weight: 600; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="login-card" id="authBox">
+        <!-- JS dynamically fills this for Login/Signup -->
+    </div>
+
+    <script>
+        const config = {
+            login: {
+                title: "Welcome Back",
+                sub: "Sign in to access your practical versions.",
+                btn: "Sign In",
+                footer: "Don't have an account? <a href='#' onclick='toggle(event, \"signup\")'>Sign Up</a>",
+                action: "login"
+            },
+            signup: {
+                title: "Create Account",
+                sub: "Start your cloud journey here.",
+                btn: "Register Now",
+                footer: "Already have an account? <a href='#' onclick='toggle(event, \"login\")'>Sign In</a>",
+                action: "signup"
+            }
+        };
+
+        let mode = "login";
+
+        function render() {
+            const c = config[mode];
+            document.getElementById('authBox').innerHTML = `
+                <h1>${c.title}</h1>
+                <p>${c.sub}</p>
+                <form onsubmit="handleSubmit(event, '${c.action}')">
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" name="username" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn">${c.btn}</button>
+                </form>
+                <div id="message"></div>
+                <div class="footer">${c.footer}</div>
+            `;
+        }
+
+        function toggle(e, m) {
+            e.preventDefault();
+            mode = m;
+            render();
+        }
+
+        async function handleSubmit(e, action) {
+            e.preventDefault();
+            const msg = document.getElementById('message');
+            msg.textContent = "Processing...";
+            msg.className = "";
+
+            const formData = new FormData(e.target);
+            try {
+                const res = await fetch(`auth.php?action=${action}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    msg.textContent = data.message;
+                    msg.className = "success";
+                    if (action === 'login') {
+                        setTimeout(() => window.location.href = '../index.html', 1000);
+                    } else {
+                        setTimeout(() => toggle(e, 'login'), 1500);
+                    }
+                } else {
+                    msg.textContent = data.message;
+                    msg.className = "error";
+                }
+            } catch (err) {
+                msg.textContent = "Error connecting to server.";
+                msg.className = "error";
+            }
+        }
+
+        render();
+    </script>
+</body>
+</html>

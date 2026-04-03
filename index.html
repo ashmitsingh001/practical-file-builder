@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Practical Builder</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body,
+    #sidebar #thumb-list,
+    .controls-bar {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    body::-webkit-scrollbar,
+    #sidebar #thumb-list::-webkit-scrollbar,
+    .controls-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    :root {
+      /* Layout Variables */
+      --sidebar-width: 250px;
+      --navbar-height: 70px;
+      --accent-color: #007bff;
+
+      /* Default Theme (Modern Custom) */
+      --bg-image: url('https://practicalfilebuilder.free.nf/bg.jpg');
+      --bg-size: cover;
+      --bg-repeat: no-repeat;
+      --bg-overlay: rgba(255, 255, 255, 0.40);
+      --bg-overlay-print: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4));
+      --page-bg: white;
+      --heading-color: #111;
+      --sub-color: #333;
+      --divider-color: #111;
+
+      --code-bg: #0d1117;
+      --code-border: #30363d;
+      --code-text: #c9d1d9;
+
+      --output-bg: #1a1a1a;
+      --output-border: #333;
+      --output-bar-bg: #2d2d2d;
+      --output-text: #00ff41;
+
+      --font-heading: 'Inter', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* THEME 2: Clean Academic (Pure White Print) */
+    [data-theme="academic-clean"] {
+      --bg-image: none;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #000;
+      --sub-color: #444;
+      --divider-color: #ddd;
+
+      --code-bg: #f8f9fa;
+      --code-border: #e9ecef;
+      --code-text: #212529;
+
+      --output-bg: #ffffff;
+      --output-border: #dee2e6;
+      --output-bar-bg: #f1f3f5;
+      --output-text: #0b5345;
+    }
+
+    /* THEME 3: Academic Serif (Classic Ivory University) */
+    [data-theme="academic-serif"] {
+      --bg-image: none;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #fdfbf7;
+      --heading-color: #2c3e50;
+      --sub-color: #34495e;
+      --divider-color: #bdc3c7;
+
+      --code-bg: #ffffff;
+      --code-border: #d5d8dc;
+      --code-text: #17202a;
+
+      --output-bg: #f8f9f9;
+      --output-border: #ccd1d1;
+      --output-bar-bg: #e5e8e8;
+      --output-text: #1b4f72;
+
+      --font-heading: 'Times New Roman', Times, serif;
+      --font-body: 'Georgia', serif;
+    }
+
+    /* THEME 4: Notebook Lined (Grid Paper) */
+    [data-theme="academic-lined"] {
+      --bg-image: repeating-linear-gradient(transparent, transparent 31px, #e0e6ed 31px, #e0e6ed 32px);
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #1a5276;
+      --sub-color: #5d6d7e;
+      --divider-color: #85c1e9;
+
+      --code-bg: rgba(255, 255, 255, 0.85);
+      --code-border: #aed6f1;
+      --code-text: #154360;
+
+      --output-bg: rgba(255, 255, 255, 0.85);
+      --output-border: #aed6f1;
+      --output-bar-bg: #d6eaf8;
+      --output-text: #1a5276;
+    }
+
+    /* THEME: Yellow Legal Pad */
+    [data-theme="academic-legal-pad"] {
+      --bg-image: linear-gradient(90deg, transparent 29mm, #ff9999 29mm, #ff9999 30mm, transparent 30mm), repeating-linear-gradient(transparent, transparent 30px, #aed6f1 30px, #aed6f1 31px);
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #fffccc;
+      --heading-color: #333;
+      --sub-color: #555;
+      --divider-color: #333;
+
+      --code-bg: rgba(255, 255, 255, 0.6);
+      --code-border: #aed6f1;
+      --code-text: #000;
+
+      --output-bg: rgba(255, 255, 255, 0.6);
+      --output-border: #aed6f1;
+      --output-bar-bg: rgba(255, 255, 255, 0.8);
+      --output-text: #000;
+    }
+
+    /* THEME: Graphing Paper */
+    [data-theme="academic-graph"] {
+      --bg-image: linear-gradient(90deg, #d4e6f1 1px, transparent 1px), linear-gradient(#d4e6f1 1px, transparent 1px);
+      --bg-size: 5mm 5mm;
+      --bg-repeat: repeat;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #154360;
+      --sub-color: #555;
+      --divider-color: #2980b9;
+
+      --code-bg: rgba(255, 255, 255, 0.85);
+      --code-border: #5dade2;
+      --code-text: #000;
+
+      --output-bg: rgba(255, 255, 255, 0.85);
+      --output-border: #5dade2;
+      --output-bar-bg: #ebf5fb;
+      --output-text: #000;
+    }
+
+    /* THEME: Dot Grid Journal */
+    [data-theme="academic-dot-grid"] {
+      --bg-image: radial-gradient(#bdc3c7 1px, transparent 1px);
+      --bg-size: 5mm 5mm;
+      --bg-repeat: repeat;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #333;
+      --sub-color: #666;
+      --divider-color: #ccc;
+
+      --code-bg: rgba(255, 255, 255, 0.9);
+      --code-border: #ddd;
+      --code-text: #222;
+
+      --output-bg: rgba(255, 255, 255, 0.9);
+      --output-border: #ddd;
+      --output-bar-bg: #f9f9f9;
+      --output-text: #222;
+    }
+
+    /* THEME: Cornell Notes System */
+    [data-theme="academic-cornell"] {
+      --bg-image: linear-gradient(90deg, transparent 65mm, #d3d3d3 65mm, #d3d3d3 66mm, transparent 66mm), linear-gradient(transparent 35mm, #d3d3d3 35mm, #d3d3d3 36mm, transparent 36mm);
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #111;
+      --sub-color: #444;
+      --divider-color: #111;
+
+      --code-bg: rgba(255, 255, 255, 0.9);
+      --code-border: #bbb;
+      --code-text: #111;
+
+      --output-bg: rgba(255, 255, 255, 0.9);
+      --output-border: #bbb;
+      --output-bar-bg: #f4f4f4;
+      --output-text: #111;
+
+      --font-heading: 'Inter', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* THEME 5: Framed Document (Strict Academic) */
+    [data-theme="academic-border"] {
+      --bg-image: none;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #000;
+      --sub-color: #333;
+      --divider-color: #000;
+
+      --code-bg: #ffffff;
+      --code-border: #000;
+      --code-text: #000;
+
+      --output-bg: #ffffff;
+      --output-border: #000;
+      --output-bar-bg: #f9f9f9;
+      --output-text: #000;
+
+      --font-heading: 'Georgia', serif;
+      --font-body: 'Georgia', serif;
+    }
+
+    /* THEME 6: Blue Ink (Professor Notes) */
+    [data-theme="academic-blue-ink"] {
+      --bg-image: none;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #000080;
+      --sub-color: #000080;
+      --divider-color: #4169E1;
+
+      --code-bg: #f4f6fc;
+      --code-border: #a2b9ea;
+      --code-text: #000080;
+
+      --output-bg: #f4f6fc;
+      --output-border: #a2b9ea;
+      --output-bar-bg: #e2e8f7;
+      --output-text: #0000CD;
+
+      --font-heading: 'Times New Roman', Times, serif;
+      --font-body: 'Times New Roman', Times, serif;
+    }
+
+    /* THEME 7: Typewriter (Pure Courier) */
+    [data-theme="academic-typewriter"] {
+      --bg-image: none;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #f8f8f6;
+      --heading-color: #000;
+      --sub-color: #222;
+      --divider-color: #888;
+
+      --code-bg: #ffffff;
+      --code-border: #bbb;
+      --code-text: #000;
+
+      --output-bg: #ffffff;
+      --output-border: #bbb;
+      --output-bar-bg: #eaeaea;
+      --output-text: #000;
+
+      --font-heading: 'Courier New', Courier, monospace;
+      --font-body: 'Courier New', Courier, monospace;
+    }
+
+    /* Special rule for bordered theme */
+    [data-theme="academic-border"] .a4-page {
+      border: 4px double #000;
+      outline: 1px solid #000;
+      outline-offset: -10px;
+    }
+
+    body {
+      background: #2a2a2a;
+      /* Dark sleek background outside of pages */
+      font-family: var(--font-body);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--navbar-height) 0 40px var(--sidebar-width);
+      transition: background 0.3s ease, border 0.3s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes pageEntry {
+      from {
+        transform: scale(0.98) translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes cardEntry {
+      from {
+        transform: translateX(-10px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .a4-page {
+      animation: pageEntry 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .thumb-card {
+      animation: cardEntry 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+      transition: all 0.2s ease;
+    }
+
+    .thumb-card:hover {
+      transform: scale(1.02) translateX(4px);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent);
+    }
+
+    body.sidebar-collapsed {
+      --sidebar-width: 70px;
+    }
+
+    /* SIDEBAR Navigation */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      background: #1e1e1e;
+      border-right: 2px solid #333;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 15px 10px;
+      color: #fff;
+      transition: width 0.3s ease-in-out;
+    }
+
+    #sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    #sidebar::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 10px;
+    }
+
+    /* Collapsed Sidebar Adjustments */
+    body.sidebar-collapsed .sidebar-title,
+    body.sidebar-collapsed .thumb-title,
+    body.sidebar-collapsed .theory-badge {
+      display: none;
+    }
+
+    body.sidebar-collapsed .thumb-card {
+      justify-content: center;
+      padding: 12px 0;
+    }
+
+    .toggle-sidebar-btn {
+      background: #333;
+      color: #aaa;
+      border: none;
+      border-radius: 4px;
+      padding: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .toggle-sidebar-btn:hover {
+      background: #444;
+      color: white;
+    }
+
+    body.sidebar-collapsed .toggle-sidebar-btn {
+      width: 100%;
+      margin: 0;
+    }
+
+    /* PRO STUDIO LEFT SIDEBAR (EXPLORER) */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      background: var(--card-bg);
+      backdrop-filter: blur(25px) saturate(180%);
+      -webkit-backdrop-filter: blur(25px) saturate(180%);
+      border-right: 1px solid var(--glass-border);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease;
+      box-shadow: 10px 0 40px rgba(0, 0, 0, 0.5);
+    }
+
+    body.sidebar-collapsed #sidebar {
+      width: 70px;
+    }
+
+    .sidebar-header {
+      padding: 30px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      height: 90px;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 900;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      white-space: nowrap;
+    }
+
+    #thumb-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    body.sidebar-collapsed #thumb-list {
+      padding: 20px 10px;
+      align-items: center;
+    }
+
+    /* Standardized Card Style (Matches Right Panel) */
+    .thumb-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: cardEntry 0.4s both;
+    }
+
+    .thumb-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent);
+      transform: translateX(5px);
+      box-shadow: 0 5px 20px -5px var(--accent-glow);
+    }
+
+    body.sidebar-collapsed .thumb-card {
+      width: 50px;
+      height: 50px;
+      padding: 0;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .thumb-page-num {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.3;
+      color: #eee;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .thumb-card:hover {
+      background: #3b3b3b;
+      transform: translateX(3px);
+      border-color: #007bff;
+    }
+
+    .thumb-card[draggable="true"] {
+      cursor: grab;
+    }
+
+    .thumb-card[draggable="true"]:active {
+      cursor: grabbing;
+    }
+
+    .thumb-page-num {
+      background: #007bff;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .thumb-title {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+    }
+
+    .thumb-delete {
+      opacity: 0;
+      color: #ff5f57;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .thumb-card:hover .thumb-delete {
+      opacity: 1;
+    }
+
+    .thumb-delete:hover {
+      background: rgba(255, 95, 87, 0.2);
+      transform: scale(1.1);
+    }
+
+    .drag-over {
+      border: 2px dashed #00ff41 !important;
+      background: #222 !important;
+    }
+
+    /* Segmented Zoom Controls */
+    .zoom-controls {
+      display: flex;
+      background: #333;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #555;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .zoom-btn {
+      background: transparent;
+      color: #ccc;
+      border: none;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: bold;
+      border-right: 1px solid #444;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .zoom-btn:last-child {
+      border-right: none;
+    }
+
+    .zoom-btn:hover {
+      background: #444;
+      color: white;
+    }
+
+    .zoom-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    /* IDE-STYLE RIGHT TOOL PANEL */
+    .controls-bar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 280px;
+      background: var(--card-bg);
+      backdrop-filter: blur(25px) saturate(180%);
+      -webkit-backdrop-filter: blur(25px) saturate(180%);
+      border-left: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+      padding: 30px 20px;
+      gap: 35px;
+      z-index: 10001;
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+      overflow-y: auto;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 25px;
+    }
+
+    .nav-group:last-child {
+      border-bottom: none;
+    }
+
+    .nav-label {
+      font-size: 11px;
+      font-weight: 900;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      /* Allow wrapping in narrow sidebar */
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    /* Refined Button Sizing for Sidebar */
+    .btn {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 10px 15px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      flex: 1 1 40%;
+      /* Two buttons per row approx */
+      justify-content: center;
+      height: 44px;
+    }
+
+    .btn-add {
+      flex: 1 1 100%;
+    }
+
+    /* Highlighted primary buttons take full row */
+
+    .zoom-controls {
+      display: flex;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 5px;
+      border-radius: 12px;
+      gap: 5px;
+      width: 100%;
+    }
+
+    .zoom-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .zoom-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 10px var(--accent-glow);
+    }
+
+    .theme-select {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: white;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      outline: none;
+      width: 100%;
+    }
+
+    /* Balance the Workspace Padding */
+    body {
+      padding: 40px 280px 40px 250px;
+      /* Top Right Bottom Left */
+      transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body.sidebar-collapsed {
+      padding-left: 70px;
+    }
+
+    .print-table {
+      margin-top: 0;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-clear {
+      background: #d97706;
+    }
+
+    .btn-clear:hover {
+      background: #b45309;
+      transform: translateY(-2px);
+    }
+
+    /* A4 Page Styling */
+    .a4-page {
+      width: 210mm;
+      min-height: 297mm;
+
+      background-image: var(--bg-image);
+      background-color: var(--page-bg);
+      background-size: var(--bg-size, cover);
+      background-position: center top;
+      background-repeat: var(--bg-repeat, no-repeat);
+
+      position: relative;
+      margin: 0 auto 35px auto;
+      box-shadow: 0 12px 50px rgba(0, 0, 0, 0.7);
+
+      /* Print break */
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .a4-page:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+
+    /* Make background faded so text is legible */
+    .a4-page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--bg-overlay);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      padding: 15mm 15mm;
+      min-height: 297mm;
+    }
+
+    /* Editor features (Delete Button) */
+    .delete-page-btn {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      background: #e53e3e;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .delete-page-btn:hover {
+      background: #c53030;
+      transform: scale(1.1);
+    }
+
+    /* Document Elements */
+    .program-heading {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 22px;
+      color: var(--heading-color);
+      text-transform: uppercase;
+      border-left: 5px solid var(--divider-color);
+      padding-left: 14px;
+      margin-bottom: 6px;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    .program-sub {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--sub-color);
+      padding-left: 19px;
+      margin-bottom: 25px;
+      min-height: 18px;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    .divider {
+      width: 100%;
+      height: 2px;
+      background: var(--divider-color);
+      margin-bottom: 25px;
+    }
+
+    .section-label {
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      page-break-after: avoid;
+      break-after: avoid;
+      color: var(--heading-color);
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1.5px;
+      background: var(--divider-color);
+      opacity: 0.25;
+    }
+
+    .section-group {
+      display: inline-block;
+      width: 100%;
+      break-inside: avoid;
+      page-break-inside: avoid;
+      /* Legacy support */
+    }
+
+    /* Source Code Block */
+    .code-block {
+      background: var(--code-bg);
+      border-radius: 6px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--code-border);
+      display: block;
+      break-inside: auto !important;
+      page-break-inside: auto !important;
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .dot.red {
+      background: #ff5f57;
+    }
+
+    .dot.yellow {
+      background: #febc2e;
+    }
+
+    .dot.green {
+      background: #28c840;
+    }
+
+    .code-editor,
+    .output-editor {
+      min-height: 25px;
+      width: 100%;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 11px;
+      line-height: 1.2;
+      color: var(--code-text);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      break-inside: auto !important;
+      page-break-inside: auto !important;
+    }
+
+    /* CSS Pseudo Placeholders for empty divs */
+    [empty]:not(:focus):before {
+      content: attr(placeholder);
+      opacity: 0.3;
+    }
+
+    /* Output Block */
+    .output-block {
+      background: var(--output-bg);
+      border-radius: 6px;
+      padding: 15px 20px;
+      border: 1px solid var(--output-border);
+      position: relative;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .output-bar {
+      background: var(--output-bar-bg);
+      border-radius: 4px 4px 0 0;
+      padding: 6px 14px;
+      margin: -15px -20px 12px -20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .output-editor {
+      color: var(--output-text);
+    }
+
+    .upload-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #dfdfdf;
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+    }
+
+    .upload-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .image-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .custom-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      margin: 0 auto;
+      display: block;
+    }
+
+    .img-actions {
+      margin-top: 10px;
+      display: none;
+      gap: 10px;
+    }
+
+    .clear-img-btn {
+      background: none;
+      border: none;
+      color: #ff5f57;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .clear-img-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* ======== THEORY PAGE STYLES ======== */
+    .theory-page .program-heading {
+      border-left: 8px solid var(--divider-color);
+      margin-bottom: 20px;
+    }
+
+    .theory-body {
+      font-family: var(--font-body);
+      font-size: 14.5px;
+      line-height: 32px;
+      /* Sync with notebook lines */
+      color: var(--sub-color);
+      min-height: 50mm;
+      outline: none;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      padding: 0 5px;
+    }
+
+    .thumb-card.theory-thumb {
+      border-left: 4px solid #7c3aed;
+    }
+
+    .theory-badge {
+      font-size: 9px;
+      background: #7c3aed;
+      color: white;
+      padding: 1px 4px;
+      border-radius: 3px;
+      margin-left: auto;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    /* ======== THEORY COMPONENT BUILDER ======== */
+    .theory-block {
+      position: relative;
+      margin-bottom: 2px;
+      padding: 5px 5px 5px 35px;
+      /* Room for drag handle */
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .theory-block.dragging {
+      opacity: 0.4;
+      border: 2px dashed #7c3aed;
+    }
+
+    .theory-block:hover {
+      background: rgba(124, 58, 237, 0.03);
+      border-radius: 4px;
+    }
+
+    .drag-handle {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: grab;
+      color: #aaa;
+      font-size: 18px;
+      opacity: 0;
+      transition: opacity 0.2s;
+      user-select: none;
+    }
+
+    .theory-block:hover .drag-handle {
+      opacity: 1;
+    }
+
+    .block-delete {
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      background: #ff5f57;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .theory-block:hover .block-delete {
+      opacity: 1;
+    }
+
+    .builder-toolbar {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+      padding: 10px;
+      background: rgba(124, 58, 237, 0.05);
+      border: 1px dashed #7c3aed;
+      border-radius: 8px;
+    }
+
+    .builder-btn {
+      background: #7c3aed;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .builder-btn:hover {
+      background: #6d28d9;
+      transform: translateY(-1px);
+    }
+
+    /* ======== PRINT LOGIC ======== */
+    .print-bg {
+      display: none;
+    }
+
+    .print-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: none;
+    }
+
+    .print-header,
+    .print-footer {
+      display: none;
+    }
+
+    .print-header th,
+    .print-footer td {
+      height: 18mm;
+      border: none;
+      padding: 0;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    @media print {
+      body {
+        background: none;
+        padding: 0 !important;
+      }
+
+      #sidebar {
+        display: none !important;
+      }
+
+      .controls-bar {
+        display: none !important;
+      }
+
+      .print-table {
+        zoom: 1 !important;
+        transform: none !important;
+      }
+
+      .print-header {
+        display: table-header-group !important;
+      }
+
+      .print-footer {
+        display: table-footer-group !important;
+      }
+
+      .top-spacer {
+        display: none !important;
+      }
+
+      .content {
+        padding: 0 15mm 10mm 15mm !important;
+        min-height: auto !important;
+      }
+
+      .print-footer td {
+        height: 0 !important;
+      }
+
+      .print-table tr,
+      .print-table td,
+      #pages-wrapper {
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+      }
+
+      /* Source Code breaking improvements */
+      .section-label:first-of-type {
+        break-after: auto !important;
+        page-break-after: auto !important;
+      }
+
+      .code-block {
+        background: var(--code-bg) !important;
+        border: 1px solid var(--code-border) !important;
+        padding: 10px 15px !important;
+        border-radius: 6px !important;
+        display: block !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+        height: auto !important;
+        min-height: auto !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .code-editor {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+      }
+
+      /* Tighten margins for print */
+      .program-sub,
+      .divider,
+      .section-label {
+        margin-bottom: 12px !important;
+      }
+
+      .img-actions {
+        display: none !important;
+      }
+
+      .image-gallery {
+        gap: 10px !important;
+      }
+
+
+      /* Watermark Background repeating across ALL pages magically! */
+      .print-bg {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: var(--bg-overlay-print), var(--bg-image);
+        background-color: var(--page-bg);
+        background-size: var(--bg-size, cover);
+        background-position: center top;
+        background-repeat: var(--bg-repeat, no-repeat);
+        z-index: -999;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* Hide Editor UI */
+      .controls-bar {
+        display: none !important;
+      }
+
+      .delete-page-btn {
+        display: none !important;
+      }
+
+      .upload-btn {
+        display: none !important;
+      }
+
+      .clear-img-btn {
+        display: none !important;
+      }
+
+      .builder-toolbar,
+      .block-delete,
+      .drag-handle {
+        display: none !important;
+      }
+
+      [contenteditable] {
+        outline: none !important;
+        background: none !important;
+        border: transparent !important;
+      }
+
+      /* PRINTER-FRIENDLY CODE AND OUTPUT BLOCKS (Save Black Ink) */
+      .code-block,
+      .output-block {
+        background: white !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+      }
+
+      .output-bar {
+        background: #f0f0f0 !important;
+        border-bottom: 1px solid #ccc !important;
+      }
+
+      .custom-img {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        max-height: 180mm !important;
+        /* Cap image height to prevent page spill */
+        object-fit: contain;
+      }
+
+      /* Force Text to exactly Black */
+      .code-editor,
+      .output-editor {
+        color: black !important;
+      }
+
+      .a4-page {
+        background: transparent !important;
+        box-shadow: none;
+        margin: 0;
+        width: 100%;
+        min-height: auto !important;
+        height: auto !important;
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+
+      #pages-wrapper>.a4-page:last-of-type {
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+
+      .a4-page::before {
+        display: none !important;
+      }
+
+      /* Hidden because print-bg handles it */
+    }
+
+    /* CUSTOM UI ENGINE: TOAST & DIALOG */
+    @keyframes slideUp {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .ui-toast-container {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ui-toast {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      padding: 12px 20px;
+      border-radius: 10px;
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      animation: slideUp 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 200px;
+    }
+
+    .ui-toast.success i {
+      color: #10b981;
+    }
+
+    .ui-toast.error i {
+      color: #ef4444;
+    }
+
+    .ui-dialog-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 1000001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .ui-dialog {
+      background: #1e293b;
+      border: 1px solid var(--glass-border);
+      padding: 30px;
+      border-radius: 16px;
+      width: 380px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+      text-align: center;
+    }
+
+    .ui-dialog h3 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+    }
+
+    .ui-dialog p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .ui-dialog-btns {
+      display: flex;
+      gap: 12px;
+    }
+
+    .ui-dialog-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .ui-dialog-btn.cancel {
+      background: #334155;
+      color: white;
+    }
+
+    .ui-dialog-btn.confirm {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .ui-dialog-btn.danger {
+      background: #ef4444;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- VISUAL SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title"><i class="ph-bold ph-files"></i> Pages</div>
+      <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+        <i class="ph-fill ph-list"></i>
+      </button>
+    </div>
+    <div id="thumb-list"></div>
+  </div>
+
+  <div class="print-bg"></div>
+
+  <!-- PRO STUDIO RIGHT TOOL PANEL -->
+  <div class="controls-bar">
+    <!-- ZONE 1: DOCUMENT (Top) -->
+    <div class="nav-group">
+      <div class="nav-label">Build Document</div>
+      <div class="row">
+        <button class="btn btn-add" style="color: #0ea5e9;" onclick="newProject()">
+          <i class="ph-bold ph-plus-square"></i> New Project
+        </button>
+        <button class="btn" style="color: #f59e0b;" onclick="addPage()">
+          <i class="ph-bold ph-plus"></i> Add Page
+        </button>
+        <button class="btn" style="color: #7c3aed;" onclick="addTheoryPage()">
+          <i class="ph-bold ph-article-medium"></i> Add Theory
+        </button>
+      </div>
+    </div>
+
+    <!-- ZONE 2: VIEWSTYLE (Center) -->
+    <div class="nav-group">
+      <div class="nav-label">View & Style</div>
+      <div class="row">
+        <select id="themeSelector" class="theme-select" onchange="changeTheme(this.value)">
+          <optgroup label="Essential Paper">
+            <option value="academic-lined">🔵 Lined Notebook</option>
+            <option value="academic-legal-pad">🟡 Legal Pad</option>
+            <option value="academic-graph">📐 Graph Paper</option>
+            <option value="academic-dot-grid">📓 Dot Grid</option>
+            <option value="academic-cornell">📝 Cornell Notes</option>
+          </optgroup>
+          <optgroup label="Specialty Styles">
+            <option value="parchment">📜 Antique Parchment</option>
+            <option value="academic-clean">📄 Clean Minimalist</option>
+            <option value="academic-blue-ink">🖊️ Blue Ink Style</option>
+            <option value="academic-typewriter">🖨️ Vintage Typed</option>
+          </optgroup>
+        </select>
+
+        <div class="zoom-controls">
+          <button class="zoom-btn" onclick="setZoom(0.75)">75%</button>
+          <button class="zoom-btn active" onclick="setZoom(1.0)">100%</button>
+          <button class="zoom-btn" onclick="setZoom('fit')">Fit</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ZONE 3: FILE & CLOUD (Bottom) -->
+    <div class="nav-group">
+      <div class="nav-label">File & sync</div>
+      <div class="row">
+        <button class="btn btn-export" style="color: #10b981;" onclick="window.print()">
+          <i class="ph-bold ph-file-pdf"></i> Export PDF
+        </button>
+
+        <!-- Hook for cloud sync.js -->
+        <div id="cloud-portal-hook" style="width:100%; display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTAINER FOR PAGES (Everything inside here gets saved!) -->
+  <table class="print-table">
+    <thead class="print-header">
+      <tr>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div id="pages-wrapper"></div>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot class="print-footer">
+      <tr>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- HIDDEN TEMPLATE -->
+  <template id="page-tpl">
+    <div class="a4-page">
+      <button class="delete-page-btn" onclick="deletePage(this)" title="Delete Page">✖</button>
+      <div class="content">
+        <div class="top-spacer" style="height: 18mm;"></div>
+
+        <!-- Editable Heading -->
+        <div class="program-heading" contenteditable="true" placeholder="Enter Heading (e.g. Program X)" empty></div>
+        <div class="program-sub" contenteditable="true" placeholder="Enter Subtitle (e.g. WAP to ...)" empty></div>
+        <div class="divider"></div>
+
+        <div class="section-label">Source Code</div>
+        <div class="code-block">
+          <div class="window-dots">
+            <div class="dot red"></div>
+            <div class="dot yellow"></div>
+            <div class="dot green"></div>
+          </div>
+
+          <!-- Editable Plaintext Code block -->
+          <pre class="code-editor" contenteditable="plaintext-only" placeholder="Paste Java code here..."
+            oninput="checkEmpty(this)" empty></pre>
+        </div>
+
+        <div class="section-group">
+          <div class="section-label">Output</div>
+          <div class="output-block">
+            <div class="output-bar">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+                <span
+                  style="font-size:10px; color:#aaa; font-family:'JetBrains Mono', monospace; margin-left:8px;">cmd.exe</span>
+              </div>
+
+              <!-- File Uploader -->
+              <label class="upload-btn">🖼️ Import Image
+                <input type="file" accept="image/*" style="display:none;" onchange="loadImage(event, this)">
+              </label>
+            </div>
+
+            <!-- Editable Text Output Block -->
+            <pre class="output-editor" contenteditable="plaintext-only"
+              placeholder="Paste simulated text output, or upload a screenshot image above..."
+              oninput="checkEmpty(this)" empty></pre>
+
+            <!-- Image Gallery Container -->
+            <div class="image-gallery"></div>
+
+            <div class="img-actions">
+              <button class="clear-img-btn" onclick="removeImage(this)">Clear All Images</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </template>
+
+  <!-- THEORY TEMPLATE -->
+  <template id="theory-page-tpl">
+    <div class="a4-page theory-page">
+      <button class="delete-page-btn" onclick="deletePage(this)" title="Delete Page">✖</button>
+      <div class="content">
+        <div class="top-spacer" style="height: 18mm;"></div>
+
+        <div class="theory-elements-container"></div>
+
+        <div class="builder-toolbar">
+          <button class="builder-btn" onclick="addTheoryBlock(this, 'heading')">+ Heading</button>
+          <button class="builder-btn" onclick="addTheoryBlock(this, 'question')">+ Question</button>
+          <button class="builder-btn" onclick="addTheoryBlock(this, 'text')">+ Theory Text</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- APP ACTIONS LOGIC -->
+  <script>
+    // ========== 0. UI ENGINE (REPLACING NATIVE POPUPS) ==========
+    const UI = {
+      toast(msg, type = 'success') {
+        let container = document.querySelector('.ui-toast-container');
+        if (!container) {
+          container = document.createElement('div');
+          container.className = 'ui-toast-container';
+          document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        toast.className = `ui-toast ${type}`;
+        const icon = type === 'success' ? 'ph-check-circle' : (type === 'error' ? 'ph-x-circle' : 'ph-info');
+        toast.innerHTML = `<i class="ph-bold ${icon}"></i> <span>${msg}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(20px)';
+          setTimeout(() => toast.remove(), 400);
+        }, 3000);
+      },
+
+      confirm(msg, isDanger = false) {
+        return new Promise(resolve => {
+          const overlay = document.createElement('div');
+          overlay.className = 'ui-dialog-overlay';
+          overlay.innerHTML = `
+            <div class="ui-dialog">
+              <h3>Are you sure?</h3>
+              <p>${msg}</p>
+              <div class="ui-dialog-btns">
+                <button class="ui-dialog-btn cancel">Cancel</button>
+                <button class="ui-dialog-btn ${isDanger ? 'danger' : 'confirm'}">${isDanger ? 'Delete' : 'Confirm'}</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(overlay);
+          overlay.querySelector('.cancel').onclick = () => { overlay.remove(); resolve(false); };
+          overlay.querySelector('.confirm, .danger').onclick = () => { overlay.remove(); resolve(true); };
+        });
+      }
+    };
+
+    // Replace native alert/confirm with our beautiful UI
+    window._alert = window.alert;
+    window.alert = (m) => UI.toast(m);
+
+    // Handles the placeholder visibility
+    function checkEmpty(el) {
+      if (el.textContent.trim() === '') el.setAttribute('empty', '');
+      else el.removeAttribute('empty');
+    }
+
+    // Attach listener globally for any contenteditable inputs
+    document.addEventListener('input', e => {
+      if (e.target.hasAttribute('contenteditable')) checkEmpty(e.target);
+    });
+
+    // Handle Plaintext pasting in non-Chrome browsers fallback just in case
+    document.addEventListener("paste", function (e) {
+      if (e.target.isContentEditable) {
+        e.preventDefault();
+        var text = (e.originalEvent || e).clipboardData.getData('text/plain');
+
+        // Critical Windows paste fix: strip \r from \r\n to prevent double spacing when pasted natively
+        text = text.replace(/\r\n/g, '\n');
+        text = text.replace(/\r/g, '\n');
+
+        document.execCommand('insertText', false, text);
+      }
+    });
+
+    // ========== DRAG & DROP SIDEBAR SYSTEM ==========
+    function refreshSidebar() {
+      const thumbList = document.getElementById('thumb-list');
+      if (thumbList) thumbList.innerHTML = '';
+
+      const pages = document.querySelectorAll('.a4-page:not(template .a4-page)');
+
+      pages.forEach((page, index) => {
+        // assign a physical tracking ID for jump/move bindings if not present
+        if (!page.id || page.id.startsWith('page-')) {
+          const safeId = 'p-' + Math.random().toString(36).substr(2, 9);
+          if (!page.id) page.id = safeId;
+        }
+
+        const headingDiv = page.querySelector('.program-heading');
+        let title = headingDiv && headingDiv.textContent.trim() !== '' ? headingDiv.textContent : 'Untitled Page';
+
+        const card = document.createElement('div');
+        card.className = 'thumb-card';
+        if (page.classList.contains('theory-page')) card.classList.add('theory-thumb');
+        card.draggable = true;
+        card.setAttribute('data-target', page.id);
+
+        let badge = page.classList.contains('theory-page') ? '<span class="theory-badge">Theory</span>' : '';
+        card.innerHTML = `
+          <div class="thumb-page-num">${index + 1}</div>
+          <div class="thumb-title">${title}</div>
+          ${badge}
+          <div class="thumb-delete" onclick="event.stopPropagation(); deletePageById('${page.id}')" title="Delete Page">✖</div>
+        `;
+
+        // Scroll instantly to map location
+        card.onclick = () => {
+          document.getElementById(page.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        // Drag Bindings
+        card.addEventListener('dragstart', handleDragStart);
+        card.addEventListener('dragover', handleDragOver);
+        card.addEventListener('dragleave', handleDragLeave);
+        card.addEventListener('drop', handleDrop);
+        card.addEventListener('dragend', handleDragEnd);
+
+        if (thumbList) thumbList.appendChild(card);
+      });
+    }
+
+    let draggedThumb = null;
+    function handleDragStart(e) {
+      draggedThumb = this;
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(() => this.style.opacity = '0.5', 0);
+    }
+
+    function handleDragOver(e) {
+      if (e.preventDefault) e.preventDefault(); // allow dropping
+      e.dataTransfer.dropEffect = 'move';
+      this.classList.add('drag-over');
+      return false;
+    }
+
+    function handleDragLeave(e) {
+      this.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+      if (e.stopPropagation) e.stopPropagation();
+      this.classList.remove('drag-over');
+
+      if (draggedThumb !== this) {
+        const targetId = this.getAttribute('data-target');
+        const draggedId = draggedThumb.getAttribute('data-target');
+
+        const targetPage = document.getElementById(targetId);
+        const draggedPage = document.getElementById(draggedId);
+        const wrapper = document.getElementById('pages-wrapper');
+
+        const allThumbs = Array.from(document.querySelectorAll('.thumb-card'));
+        const draggedIndex = allThumbs.indexOf(draggedThumb);
+        const targetIndex = allThumbs.indexOf(this);
+
+        if (draggedIndex < targetIndex) {
+          wrapper.insertBefore(draggedPage, targetPage.nextSibling); // Move Down
+        } else {
+          wrapper.insertBefore(draggedPage, targetPage); // Move Up
+        }
+      }
+      return false;
+    }
+
+    function handleDragEnd(e) {
+      this.style.opacity = '1';
+      document.querySelectorAll('.thumb-card').forEach(col => col.classList.remove('drag-over'));
+    }
+
+    // --- SIDEBAR UTILS ---
+    function toggleSidebar() {
+      document.body.classList.toggle('sidebar-collapsed');
+      const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+      localStorage.setItem('sidebar_collapsed', isCollapsed);
+
+      // Recalculate 'fit' zoom if active
+      const activeZoomBtn = document.querySelector('.zoom-btn.active');
+      if (activeZoomBtn && activeZoomBtn.textContent === 'Fit') {
+        setZoom('fit');
+      }
+    }
+
+    // ========== AUTO-SAVE SYSTEM ==========
+    function saveState() {
+      const wrapper = document.getElementById('pages-wrapper');
+      try {
+        localStorage.setItem('practical_builder_data', wrapper.innerHTML);
+      } catch (e) {
+        console.error('Storage exceeded limit. Try adding fewer or smaller images.', e);
+        // alert intentionally disabled from spamming multiple saves
+      }
+      refreshSidebar();
+    }
+
+    // ========== ZOOM ENGINE ==========
+    let currentZoom = 1.0;
+
+    function setZoom(val) {
+      const zoomBtns = document.querySelectorAll('.zoom-btn');
+
+      if (val === 'fit') {
+        const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+        const sidebarWidth = isCollapsed ? 70 : 250;
+        const availableWidth = window.innerWidth - sidebarWidth - 80; // 80 for breathing room
+        const pageMinWidth = 810; // A4 width + margin safety
+        const fitScale = Math.min(1.2, availableWidth / pageMinWidth);
+        currentZoom = fitScale;
+      } else {
+        currentZoom = parseFloat(val);
+      }
+
+      // Constrain bounds for usability
+      if (currentZoom < 0.25) currentZoom = 0.25;
+      if (currentZoom > 2.0) currentZoom = 2.0;
+
+      // Apply to Print Table
+      const table = document.querySelector('.print-table');
+      if (table) table.style.zoom = currentZoom;
+      localStorage.setItem('doc_zoom', currentZoom);
+
+      // Update UI buttons visually
+      zoomBtns.forEach(btn => btn.classList.remove('active'));
+
+      const setVal = val.toString();
+      if (setVal === '0.75') zoomBtns[0].classList.add('active');
+      if (setVal === '1' || setVal === '1.0') zoomBtns[1].classList.add('active');
+      if (val === 'fit') zoomBtns[2].classList.add('active');
+    }
+
+    // Ctrl+Scroll & Trackpad Pinch Bindings
+    document.addEventListener('wheel', function (e) {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (e.deltaY > 0) setZoom(currentZoom - 0.05); // zoom out
+        else setZoom(currentZoom + 0.05);            // zoom in
+      }
+    }, { passive: false });
+
+    function changeTheme(themeValue) {
+      if (themeValue === 'default') {
+        document.body.removeAttribute('data-theme');
+      } else {
+        document.body.setAttribute('data-theme', themeValue);
+      }
+      localStorage.setItem('practical_builder_theme', themeValue);
+    }
+
+    // Watch the pages wrapper for any edits, text entries, or DOM changes to Auto-save!
+    const observer = new MutationObserver(() => {
+      saveState();
+    });
+
+    function initAutoSave() {
+      observer.observe(document.getElementById('pages-wrapper'), {
+        childList: true,
+        subtree: true,
+        characterData: true,
+        attributes: true,
+        // Specifically monitor 'empty' attribute or source changes
+        attributeFilter: ['src', 'style', 'empty']
+      });
+    }
+
+    // ========== APP ACTIONS ==========
+
+    // Clear all saved data
+    async function clearAllData() {
+      const ok = await UI.confirm("This will permanently delete ALL your local work. (Cloud saves are safe!)", true);
+      if (ok) {
+        localStorage.removeItem('practical_builder_data');
+        document.getElementById('pages-wrapper').innerHTML = '';
+        addPage();
+        UI.toast("Workspace cleared.");
+      }
+    }
+
+    // Add a new template page
+    function addPage() {
+      const template = document.getElementById('page-tpl');
+      const clone = template.content.cloneNode(true);
+      document.getElementById('pages-wrapper').appendChild(clone);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function addTheoryPage() {
+      const template = document.getElementById('theory-page-tpl');
+      const clone = template.content.cloneNode(true);
+      document.getElementById('pages-wrapper').appendChild(clone);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function addTheoryBlock(btnElem, type) {
+      const container = btnElem.closest('.content').querySelector('.theory-elements-container');
+      const block = document.createElement('div');
+      block.className = 'theory-block';
+      block.draggable = true;
+
+      let innerHTML = '';
+      if (type === 'heading') {
+        innerHTML = `<div class="program-heading" contenteditable="true" placeholder="Enter Heading (e.g. Program 1)" empty></div><div class="divider"></div>`;
+      } else if (type === 'question') {
+        innerHTML = `<div class="program-sub" contenteditable="true" placeholder="Enter Question (e.g. Q1. What is Java?)" empty></div>`;
+      } else if (type === 'text') {
+        innerHTML = `<div class="theory-body" contenteditable="plaintext-only" placeholder="Type answer text here..." oninput="checkEmpty(this)" empty></div>`;
+      }
+
+      block.innerHTML = `
+        <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
+        ${innerHTML}
+        <button class="block-delete" onclick="this.parentElement.remove(); saveState();" title="Remove block">✖</button>
+      `;
+
+      // Internal Reordering Logic
+      block.addEventListener('dragstart', (e) => {
+        block.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', ''); // Workaround for Firefox
+      });
+
+      block.addEventListener('dragend', () => {
+        block.classList.remove('dragging');
+        saveState();
+      });
+
+      container.appendChild(block);
+
+      // Auto-focus the new block
+      const editable = block.querySelector('[contenteditable]');
+      if (editable) editable.focus();
+
+      saveState();
+    }
+
+    // Initialize all pages for drag support (Delegated)
+    document.addEventListener('dragover', (e) => {
+      const container = e.target.closest('.theory-elements-container');
+      if (!container) return;
+      e.preventDefault();
+
+      const draggingBlock = document.querySelector('.dragging');
+      if (!draggingBlock) return;
+
+      const afterElement = getDragAfterElement(container, e.clientY);
+      if (afterElement == null) {
+        container.appendChild(draggingBlock);
+      } else {
+        container.insertBefore(draggingBlock, afterElement);
+      }
+    });
+
+    function getDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll('.theory-block:not(.dragging)')];
+
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    // Delete a page with confirmation
+    async function deletePage(buttonElem) {
+      const ok = await UI.confirm("Are you sure you want to delete this page?", true);
+      if (ok) {
+        buttonElem.parentElement.remove();
+        saveState();
+        UI.toast("Page deleted.");
+      }
+    }
+
+    async function deletePageById(pageId) {
+      const page = document.getElementById(pageId);
+      if (page) {
+        const ok = await UI.confirm("Are you sure you want to delete this page?", true);
+        if (ok) {
+          page.remove();
+          saveState();
+          UI.toast("Page deleted.");
+        }
+      }
+    }
+
+    // Load an image with auto-compression (prevents hitting LocalStorage 5MB limits)
+    function loadImage(event, inputElem) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      const outputBlock = inputElem.closest('.output-block');
+
+      let gallery = outputBlock.querySelector('.image-gallery');
+      const textEditor = outputBlock.querySelector('.output-editor');
+      const actionRow = outputBlock.querySelector('.img-actions');
+
+      // Auto-upgrade legacy saved DOMs on the fly
+      if (!gallery) {
+        gallery = document.createElement('div');
+        gallery.className = 'image-gallery';
+        if (actionRow) outputBlock.insertBefore(gallery, actionRow);
+
+        // Cleanup legacy img node
+        const oldImg = outputBlock.querySelector('.custom-img');
+        if (oldImg) oldImg.remove();
+      }
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          // Compress Image (Scale max width to 1200px)
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Output as JPEG at 80% quality
+          const compressedData = canvas.toDataURL('image/jpeg', 0.80);
+
+          const newImg = document.createElement('img');
+          newImg.className = 'custom-img';
+          newImg.src = compressedData;
+          gallery.appendChild(newImg);
+
+          actionRow.style.display = 'flex';
+          textEditor.style.display = 'none'; // hide the text editor
+
+          saveState(); // Ensure custom upload is forcefully saved
+        };
+        img.src = e.target.result;
+      }
+      reader.readAsDataURL(file);
+      inputElem.value = ""; // Reset input so same file can be uploaded again if needed
+    }
+
+    // Remove the image and bring the text back
+    function removeImage(btnElem) {
+      const outputBlock = btnElem.closest('.output-block');
+
+      const gallery = outputBlock.querySelector('.image-gallery');
+      const textEditor = outputBlock.querySelector('.output-editor');
+      const actionRow = outputBlock.querySelector('.img-actions');
+
+      if (gallery) gallery.innerHTML = '';
+
+      // Clean up legacy template issues just in case
+      const oldImg = outputBlock.querySelector('img.custom-img');
+      if (oldImg && !gallery) oldImg.remove();
+
+      if (actionRow) actionRow.style.display = 'none';
+      if (textEditor) textEditor.style.display = 'block';
+
+      // Reset input value
+      const fileInput = outputBlock.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = "";
+    }
+
+    // ========== DATA PERSISTENCE (IMPORT/EXPORT) ==========
+
+    // Export current state as a JSON file
+    function exportData() {
+      const wrapper = document.getElementById('pages-wrapper');
+      const theme = document.body.getAttribute('data-theme') || 'default';
+
+      const backup = {
+        timestamp: new Date().toISOString(),
+        version: "2.0",
+        theme: theme,
+        content: wrapper.innerHTML
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "practical_backup_" + new Date().toLocaleDateString().replace(/\//g, '-') + ".json");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    }
+
+    // Handles file selection for import
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function (e) {
+        try {
+          const data = JSON.parse(e.target.result);
+
+          const ok = await UI.confirm("Importing this file will replace all your current programs. Continue?");
+          if (ok) {
+            if (Array.isArray(data)) {
+              batchLoad(data);
+            } else if (data.content) {
+              document.getElementById('pages-wrapper').innerHTML = data.content;
+              if (data.theme) changeTheme(data.theme);
+            } else {
+              throw new Error("Invalid format");
+            }
+            saveState();
+            refreshSidebar();
+            UI.toast("Data imported successfully!");
+          }
+        } catch (err) {
+          UI.toast("Error importing file: " + err.message, "error");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = ''; // Reset input
+    }
+
+    // New helper to bulk-generate pages from a simple JSON list
+    // Format: [ { "type": "theory", "blocks": [...] }, { "title": "Prog 1", "sub": "WAP to...", "code": "...", "output": "..." }, ... ]
+    function batchLoad(programList) {
+      const wrapper = document.getElementById('pages-wrapper');
+      const progTemplate = document.getElementById('page-tpl');
+      const theoryTemplate = document.getElementById('theory-page-tpl');
+
+      programList.forEach(prog => {
+        if (prog.type === 'theory') {
+          // Special Case: Theory Page
+          const clone = theoryTemplate.content.cloneNode(true);
+          const page = clone.querySelector('.a4-page');
+          const container = page.querySelector('.theory-elements-container');
+          const btnMock = page.querySelector('.builder-btn'); // used as reference for addTheoryBlock
+
+          if (prog.blocks && Array.isArray(prog.blocks)) {
+            prog.blocks.forEach(block => {
+              // We simulate the click/call to addTheoryBlock logic
+              addTheoryBlockManual(container, block.type, block.content);
+            });
+          }
+          wrapper.appendChild(clone);
+        } else {
+          // Standard Case: Program Page
+          const clone = progTemplate.content.cloneNode(true);
+          const page = clone.querySelector('.a4-page');
+
+          if (prog.title) page.querySelector('.program-heading').textContent = prog.title;
+          if (prog.sub) page.querySelector('.program-sub').textContent = prog.sub;
+          if (prog.code) page.querySelector('.code-editor').textContent = prog.code;
+          if (prog.output) page.querySelector('.output-editor').textContent = prog.output;
+
+          // Clear placeholders
+          page.querySelectorAll('[empty]').forEach(el => {
+            if (el.textContent.trim() !== '') el.removeAttribute('empty');
+          });
+
+          wrapper.appendChild(clone);
+        }
+      });
+    }
+
+    // Secondary helper for automated theory loading
+    function addTheoryBlockManual(container, type, content) {
+      const block = document.createElement('div');
+      block.className = 'theory-block';
+      block.draggable = true;
+
+      let innerHTML = '';
+      if (type === 'heading') {
+        innerHTML = `<div class="program-heading" contenteditable="true" placeholder="Enter Heading (e.g. Program 1)" empty>${content || ''}</div><div class="divider"></div>`;
+      } else if (type === 'question') {
+        innerHTML = `<div class="program-sub" contenteditable="true" placeholder="Enter Question (e.g. Q1. What is Java?)" empty>${content || ''}</div>`;
+      } else if (type === 'text') {
+        innerHTML = `<div class="theory-body" contenteditable="plaintext-only" placeholder="Type answer text here..." oninput="checkEmpty(this)" empty>${content || ''}</div>`;
+      }
+
+      block.innerHTML = `
+        <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
+        ${innerHTML}
+        <button class="block-delete" onclick="this.parentElement.remove(); saveState();" title="Remove block">✖</button>
+      `;
+
+      // Internal Reordering Logic
+      block.addEventListener('dragstart', (e) => {
+        block.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', '');
+      });
+      block.addEventListener('dragend', () => {
+        block.classList.remove('dragging');
+        saveState();
+      });
+
+      container.appendChild(block);
+
+      // Clear placeholder if content exists
+      const editable = block.querySelector('[empty]');
+      if (editable && editable.textContent.trim() !== '') editable.removeAttribute('empty');
+    }
+
+    // Initialize the app
+    window.onload = function () {
+      // 0. Recover Sidebar State
+      if (localStorage.getItem('sidebar_collapsed') === 'true') {
+        document.body.classList.add('sidebar-collapsed');
+      }
+
+      // 1. Recover Theme
+      let savedTheme = localStorage.getItem('practical_builder_theme');
+      if (savedTheme) {
+        document.getElementById('themeSelector').value = savedTheme;
+        changeTheme(savedTheme);
+      }
+
+      // 2. Recover Data
+      let savedData = localStorage.getItem('practical_builder_data');
+      if (savedData && savedData.trim() !== '') {
+        // Fix for browser double-spacing bugs (Chrome adds \n after <br> heavily)
+        savedData = savedData.replace(/<br\s*\/?>\r?\n/gi, '<br>');
+        savedData = savedData.replace(/<\/div>\r?\n/gi, '</div>');
+
+        // Load saved state seamlessly
+        document.getElementById('pages-wrapper').innerHTML = savedData;
+      } else {
+        addPage();
+      }
+
+      // Start watching for any text/image changes for auto-save!
+      refreshSidebar();
+      initAutoSave();
+
+      // 3. Recover Zoom State
+      let savedZoom = localStorage.getItem('doc_zoom');
+      if (savedZoom) setZoom(parseFloat(savedZoom));
+    }
+  </script>
+  <script src="Practical_Portal/sync.js"></script>
+  <script src="mobile-block.js"></script>
+</body>
+
+</html>
