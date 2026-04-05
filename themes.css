@@ -1,0 +1,255 @@
+:root {
+      /* Layout Variables */
+      --sidebar-width: 250px;
+      --navbar-height: 70px;
+      --accent-color: #007bff;
+
+      /* Default Theme (Modern Custom) */
+      --bg-image: url('https://practicalfilebuilder.free.nf/bg.jpg');
+      --bg-size: cover;
+      --bg-repeat: no-repeat;
+      --bg-overlay: rgba(255, 255, 255, 0.40);
+      --bg-overlay-print: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4));
+      --page-bg: white;
+      --heading-color: #111;
+      --sub-color: #333;
+      --divider-color: #111;
+
+      --code-bg: #0d1117;
+      --code-border: #30363d;
+      --code-text: #c9d1d9;
+
+      --output-bg: #1a1a1a;
+      --output-border: #333;
+      --output-bar-bg: #2d2d2d;
+      --output-text: #00ff41;
+
+      --font-heading: 'Inter', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* THEME 2: Clean Academic (Pure White Print) */
+    [data-theme="academic-clean"] {
+      --bg-image: none;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #000;
+      --sub-color: #444;
+      --divider-color: #ddd;
+
+      --code-bg: #f8f9fa;
+      --code-border: #e9ecef;
+      --code-text: #212529;
+
+      --output-bg: #ffffff;
+      --output-border: #dee2e6;
+      --output-bar-bg: #f1f3f5;
+      --output-text: #0b5345;
+    }
+
+    /* THEME 3: Academic Serif (Classic Ivory University) */
+    [data-theme="academic-serif"] {
+      --bg-image: none;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #fdfbf7;
+      --heading-color: #2c3e50;
+      --sub-color: #34495e;
+      --divider-color: #bdc3c7;
+
+      --code-bg: #ffffff;
+      --code-border: #d5d8dc;
+      --code-text: #17202a;
+
+      --output-bg: #f8f9f9;
+      --output-border: #ccd1d1;
+      --output-bar-bg: #e5e8e8;
+      --output-text: #1b4f72;
+
+      --font-heading: 'Times New Roman', Times, serif;
+      --font-body: 'Georgia', serif;
+    }
+
+    /* THEME 4: Notebook Lined (Grid Paper) */
+    [data-theme="academic-lined"] {
+      --bg-image: repeating-linear-gradient(transparent, transparent 31px, #e0e6ed 31px, #e0e6ed 32px);
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #1a5276;
+      --sub-color: #5d6d7e;
+      --divider-color: #85c1e9;
+
+      --code-bg: rgba(255, 255, 255, 0.85);
+      --code-border: #aed6f1;
+      --code-text: #154360;
+
+      --output-bg: rgba(255, 255, 255, 0.85);
+      --output-border: #aed6f1;
+      --output-bar-bg: #d6eaf8;
+      --output-text: #1a5276;
+    }
+
+    /* THEME: Yellow Legal Pad */
+    [data-theme="academic-legal-pad"] {
+      --bg-image: linear-gradient(90deg, transparent 29mm, #ff9999 29mm, #ff9999 30mm, transparent 30mm), repeating-linear-gradient(transparent, transparent 30px, #aed6f1 30px, #aed6f1 31px);
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #fffccc;
+      --heading-color: #333;
+      --sub-color: #555;
+      --divider-color: #333;
+
+      --code-bg: rgba(255, 255, 255, 0.6);
+      --code-border: #aed6f1;
+      --code-text: #000;
+
+      --output-bg: rgba(255, 255, 255, 0.6);
+      --output-border: #aed6f1;
+      --output-bar-bg: rgba(255, 255, 255, 0.8);
+      --output-text: #000;
+    }
+
+    /* THEME: Graphing Paper */
+    [data-theme="academic-graph"] {
+      --bg-image: linear-gradient(90deg, #d4e6f1 1px, transparent 1px), linear-gradient(#d4e6f1 1px, transparent 1px);
+      --bg-size: 5mm 5mm;
+      --bg-repeat: repeat;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #154360;
+      --sub-color: #555;
+      --divider-color: #2980b9;
+
+      --code-bg: rgba(255, 255, 255, 0.85);
+      --code-border: #5dade2;
+      --code-text: #000;
+
+      --output-bg: rgba(255, 255, 255, 0.85);
+      --output-border: #5dade2;
+      --output-bar-bg: #ebf5fb;
+      --output-text: #000;
+    }
+
+    /* THEME: Dot Grid Journal */
+    [data-theme="academic-dot-grid"] {
+      --bg-image: radial-gradient(#bdc3c7 1px, transparent 1px);
+      --bg-size: 5mm 5mm;
+      --bg-repeat: repeat;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #333;
+      --sub-color: #666;
+      --divider-color: #ccc;
+
+      --code-bg: rgba(255, 255, 255, 0.9);
+      --code-border: #ddd;
+      --code-text: #222;
+
+      --output-bg: rgba(255, 255, 255, 0.9);
+      --output-border: #ddd;
+      --output-bar-bg: #f9f9f9;
+      --output-text: #222;
+    }
+
+    /* THEME: Cornell Notes System */
+    [data-theme="academic-cornell"] {
+      --bg-image: linear-gradient(90deg, transparent 65mm, #d3d3d3 65mm, #d3d3d3 66mm, transparent 66mm), linear-gradient(transparent 35mm, #d3d3d3 35mm, #d3d3d3 36mm, transparent 36mm);
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #111;
+      --sub-color: #444;
+      --divider-color: #111;
+
+      --code-bg: rgba(255, 255, 255, 0.9);
+      --code-border: #bbb;
+      --code-text: #111;
+
+      --output-bg: rgba(255, 255, 255, 0.9);
+      --output-border: #bbb;
+      --output-bar-bg: #f4f4f4;
+      --output-text: #111;
+
+      --font-heading: 'Inter', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* THEME 5: Framed Document (Strict Academic) */
+    [data-theme="academic-border"] {
+      --bg-image: none;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #000;
+      --sub-color: #333;
+      --divider-color: #000;
+
+      --code-bg: #ffffff;
+      --code-border: #000;
+      --code-text: #000;
+
+      --output-bg: #ffffff;
+      --output-border: #000;
+      --output-bar-bg: #f9f9f9;
+      --output-text: #000;
+
+      --font-heading: 'Georgia', serif;
+      --font-body: 'Georgia', serif;
+    }
+
+    /* THEME 6: Blue Ink (Professor Notes) */
+    [data-theme="academic-blue-ink"] {
+      --bg-image: none;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #ffffff;
+      --heading-color: #000080;
+      --sub-color: #000080;
+      --divider-color: #4169E1;
+
+      --code-bg: #f4f6fc;
+      --code-border: #a2b9ea;
+      --code-text: #000080;
+
+      --output-bg: #f4f6fc;
+      --output-border: #a2b9ea;
+      --output-bar-bg: #e2e8f7;
+      --output-text: #0000CD;
+
+      --font-heading: 'Times New Roman', Times, serif;
+      --font-body: 'Times New Roman', Times, serif;
+    }
+
+    /* THEME 7: Typewriter (Pure Courier) */
+    [data-theme="academic-typewriter"] {
+      --bg-image: none;
+      --bg-overlay: transparent;
+      --bg-overlay-print: none;
+      --page-bg: #f8f8f6;
+      --heading-color: #000;
+      --sub-color: #222;
+      --divider-color: #888;
+
+      --code-bg: #ffffff;
+      --code-border: #bbb;
+      --code-text: #000;
+
+      --output-bg: #ffffff;
+      --output-border: #bbb;
+      --output-bar-bg: #eaeaea;
+      --output-text: #000;
+
+      --font-heading: 'Courier New', Courier, monospace;
+      --font-body: 'Courier New', Courier, monospace;
+    }
+
+    /* Special rule for bordered theme */
+    [data-theme="academic-border"] .a4-page {
+      border: 4px double #000;
+      outline: 1px solid #000;
+      outline-offset: -10px;
+    }
