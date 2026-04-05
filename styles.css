@@ -1704,6 +1704,82 @@
       padding-left: 82px;
     }
 
+    .top-toolbar {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10002;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 8px;
+    }
+
+    .toolbar-icon-group,
+    .toolbar-nav-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding-right: 6px;
+      margin-right: 2px;
+      border-right: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .toolbar-nav-group {
+      padding-right: 2px;
+      margin-right: 0;
+      border-right: none;
+    }
+
+    .toolbar-icon-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 16px;
+    }
+
+    .toolbar-icon-btn:hover {
+      background: #fff;
+      color: #0f172a;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12);
+    }
+
+    .toolbar-zoom-btn,
+    .toolbar-export-btn {
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #1f2937;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      height: 34px;
+    }
+
+    .toolbar-export-btn {
+      background: #ffffff;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.1);
+    }
+
     .control-top {
       display: flex;
       align-items: center;
