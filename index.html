@@ -20,7 +20,7 @@
   <!-- VISUAL SIDEBAR -->
   <div id="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-title"><i class="ph-bold ph-files"></i> Pages</div>
+      <div class="sidebar-title"><i class="ph-fill ph-squares-four"></i> Workspace</div>
       <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
         <i class="ph-fill ph-list"></i>
       </button>
@@ -34,23 +34,23 @@
   <div class="controls-bar">
     <!-- ZONE 1: DOCUMENT (Top) -->
     <div class="nav-group">
-      <div class="nav-label">Build Document</div>
+      <div class="nav-label"><i class="ph-bold ph-magic-wand"></i> Build Document</div>
       <div class="row">
         <button class="btn btn-add" style="color: #0ea5e9;" onclick="newProject()">
-          <i class="ph-bold ph-plus-square"></i> New Project
+          <i class="ph-fill ph-sparkle"></i> New Project
         </button>
         <button class="btn" style="color: #f59e0b;" onclick="addPage()">
-          <i class="ph-bold ph-plus"></i> Add Page
+          <i class="ph-fill ph-file-plus"></i> Add Page
         </button>
         <button class="btn" style="color: #7c3aed;" onclick="addTheoryPage()">
-          <i class="ph-bold ph-article-medium"></i> Add Theory
+          <i class="ph-fill ph-book-open-text"></i> Add Theory
         </button>
       </div>
     </div>
 
     <!-- ZONE 2: VIEWSTYLE (Center) -->
     <div class="nav-group">
-      <div class="nav-label">View & Style</div>
+      <div class="nav-label"><i class="ph-bold ph-paint-brush-broad"></i> View & Style</div>
       <div class="row">
         <select id="themeSelector" class="theme-select" onchange="changeTheme(this.value)">
           <optgroup label="Essential Paper">
@@ -78,10 +78,10 @@
 
     <!-- ZONE 3: FILE & CLOUD (Bottom) -->
     <div class="nav-group">
-      <div class="nav-label">File & sync</div>
+      <div class="nav-label"><i class="ph-bold ph-cloud-check"></i> File & Sync</div>
       <div class="row">
         <button class="btn btn-export" style="color: #10b981;" onclick="window.print()">
-          <i class="ph-bold ph-file-pdf"></i> Export PDF
+          <i class="ph-fill ph-arrow-square-out"></i> Export PDF
         </button>
 
         <!-- Hook for cloud sync.js -->
